@@ -1,5 +1,6 @@
 package com.tiagoamp.booksapi.exception;
 
+import com.tiagoamp.booksapi.dto.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
