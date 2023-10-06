@@ -1,13 +1,15 @@
 package com.tiagoamp.booksapi.controller;
 
-import com.tiagoamp.booksapi.dto.BookRequest;
-import com.tiagoamp.booksapi.dto.BookResponse;
-import com.tiagoamp.booksapi.dto.ReviewRequest;
-import com.tiagoamp.booksapi.dto.ReviewResponse;
+import com.tiagoamp.booksapi.dto.*;
 import com.tiagoamp.booksapi.service.BooksService;
 import com.tiagoamp.booksapi.util.BookMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,7 @@ public class BooksController {
     private final BooksService service;
     private final BookMapper bookMapper;
 
+    @Operation( summary = "Find books", description = "Get registered books" )
     @GetMapping
     public ResponseEntity<List<BookResponse>> getBooks(
             @RequestParam(value = "size", required = false, defaultValue = "3") Integer size,
@@ -38,6 +41,9 @@ public class BooksController {
         return ResponseEntity.ok(booksResp);
     }
 
+    @Operation(summary = "Find book by id", description = "Find book by id",
+            responses = {  @ApiResponse( responseCode = "404", description = "Book not found",
+                    content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) }) } )
     @GetMapping("/{id}")
     public ResponseEntity<BookResponse> getBook(@PathVariable("id") Integer id) {
         var book = service.findBookById(id);
@@ -48,7 +54,11 @@ public class BooksController {
         return ResponseEntity.ok(bookResp);
     }
 
+    @Operation(summary = "Register new book", description = "Register new book",
+            responses = {  @ApiResponse( responseCode = "400", description = "Invalid Request data",
+                    content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) })  } )
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)  // This annotation helps Swagger to automatically generate documentation
     public ResponseEntity<BookResponse> createBook(@RequestBody @Valid BookRequest request) {
         var book = bookMapper.toModel(request);
         book = service.createBook(book);
@@ -56,6 +66,13 @@ public class BooksController {
         return ResponseEntity.created(URI.create(book.getId().toString())).body(bookResp);
     }
 
+    @Operation(summary = "Update book info", description = "Update book info",
+            responses = {
+                    @ApiResponse( responseCode = "400", description = "Invalid Request data",
+                            content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) } ),
+                    @ApiResponse( responseCode = "404", description = "Book not found",
+                            content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) } )
+            })
     @PutMapping("{id}")
     public ResponseEntity<BookResponse> updateBook(@PathVariable("id") Integer id, @RequestBody @Valid BookRequest request) {
         var book = bookMapper.toModel(request);
@@ -65,12 +82,18 @@ public class BooksController {
         return ResponseEntity.ok(bookResp);
     }
 
+    @Operation(
+            summary = "Delete book by id", description = "Delete book by id",
+            responses = {  @ApiResponse( responseCode = "404", description = "Book not found",
+                    content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) })  })
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)  // This annotation helps Swagger to automatically generate documentation
     public ResponseEntity deleteBook(@PathVariable("id") Integer id) {
         service.deleteBook(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation( summary = "Find reviews", description = "Get review of a book" )
     @GetMapping("{bookId}/reviews")
     public ResponseEntity<List<ReviewResponse>> getReviews(@PathVariable("bookId") Integer bookId) {
         var reviews = service.findReviews(bookId);
@@ -81,7 +104,16 @@ public class BooksController {
         return ResponseEntity.ok(reviewsResp);
     }
 
+    @Operation(
+            summary = "Add new review", description = "Add new review to a book",
+            responses = {
+                    @ApiResponse( responseCode = "400", description = "Invalid Request data",
+                            content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) } ),
+                    @ApiResponse( responseCode = "404", description = "Book not found",
+                            content = { @Content(schema = @Schema(implementation = ErrorResponse.class)) } )
+            })
     @PostMapping("{bookId}/reviews")
+    @ResponseStatus(HttpStatus.CREATED)  // This annotation helps Swagger to automatically generate documentation
     public ResponseEntity<ReviewResponse> createReview(@PathVariable("bookId") Integer bookId, @RequestBody @Valid ReviewRequest request) {
         var review = request.getReview();
         review = service.addReview(bookId, review);
