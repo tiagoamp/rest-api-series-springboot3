@@ -30,8 +30,7 @@ public class BooksController {
             @RequestParam(value = "size", required = false, defaultValue = "3") Integer size,
             @RequestParam(value = "page", required = false, defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "sort", required = false, defaultValue = "title") String sortField,
-            @RequestParam(value = "direction", required = false, defaultValue = "ASC") String sortDirection
-    ) {
+            @RequestParam(value = "direction", required = false, defaultValue = "ASC") String sortDirection) {
         var books = service.findBooks(size, pageNumber, sortField, sortDirection);
         var booksResp = books.stream().map(bookMapper::toResponse)
                 .map(b -> b.add( linkTo(methodOn(this.getClass()).getBook(b.getId())).withSelfRel() ))
