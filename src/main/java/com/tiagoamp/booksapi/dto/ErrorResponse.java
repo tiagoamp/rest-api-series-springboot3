@@ -1,4 +1,4 @@
-package com.tiagoamp.booksapi.exception;
+package com.tiagoamp.booksapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
