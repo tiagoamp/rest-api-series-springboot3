@@ -1,0 +1,31 @@
+
+server:
+  port: 9090
+  servlet:
+    context-path: /api/v1
+  error:
+    include-stacktrace: never
+    include-message: never
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:booksdb
+    username: admin
+    password: admin
+    driverClassName: org.h2.Driver
+  jpa:
+    defer-datasource-initialization: true   # to allow DB initialization scripts (since Spring Boot version 2.5.0)
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+#        globally_quoted_identifiers: true    # to allow quotes to avoid DB reserved words conflict
+    hibernate:
+      ddl:
+        auto: update
+  h2:
+    console:
+      enabled: true
+  jackson:
+    default-property-inclusion: NON_NULL
