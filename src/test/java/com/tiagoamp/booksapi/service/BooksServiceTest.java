@@ -36,8 +36,9 @@ class BooksServiceTest {
         @Test
         @DisplayName("When no books registered, should return empty list")
         void findAllBooks_emptyList() {
-            Mockito.when(repo.findAll()).thenReturn(new ArrayList<>());
-            List<Book> result = service.findBooks();
+            Mockito.when(repo.findAll(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(new ArrayList<>());
+            List<Book> result = service.findBooks(10, 0, "title", "ASC");
             assertNotNull(result);
             assertTrue(result.isEmpty());
         }
@@ -47,9 +48,10 @@ class BooksServiceTest {
         void findAllBooks_resultList() {
             // given
             var books = TestHelper.getBooksMock();
-            Mockito.when(repo.findAll()).thenReturn(books);
+            Mockito.when(repo.findAll(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString()))
+                    .thenReturn(books);
             // when
-            List<Book> result = service.findBooks();
+            List<Book> result = service.findBooks(10, 0, "title", "ASC");
             // then
             assertFalse(result.isEmpty());
             assertEquals(books.size(), result.size());

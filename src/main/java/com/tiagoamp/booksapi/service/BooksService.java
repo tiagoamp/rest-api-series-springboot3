@@ -17,8 +17,8 @@ public class BooksService {
     private final BookGatewayRepository booksRepo;
 
 
-    public List<Book> findBooks() {
-        return booksRepo.findAll();
+    public List<Book> findBooks(Integer size, Integer pageNumber, String sortField, String sortDirection) {
+        return booksRepo.findAll(size, pageNumber, sortField, sortDirection);
     }
 
     public Book findBookById(Integer id) {
