@@ -20,8 +20,12 @@ public class BookGatewayRepository {
     private final BookMapper mapper;
 
 
-    public List<Book> findAll() {
-        List<BookEntity> entities = bookRepo.findAll();
+    public List<Book> findAll(Integer size, Integer pageNumber, String sortField, String sortDirectionStr) {
+//        List<BookEntity> entities = bookRepo.findAll();
+        Sort.Direction sortDirection = Sort.Direction.valueOf(sortDirectionStr);
+        PageRequest pageable = PageRequest.of(pageNumber, size).withSort(sortDirection, sortField);
+        Page<BookEntity> page = bookRepo.findAll(pageable);
+        var entities = page.toList();
         return entities.stream().map(mapper::toModel).toList();
     }
 

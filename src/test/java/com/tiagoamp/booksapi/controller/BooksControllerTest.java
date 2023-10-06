@@ -62,7 +62,8 @@ class BooksControllerTest {
     @Test
     @DisplayName("When Get All Books request and there are no results Should return empty list")
     public void whenGetAllRequest_emptyListResponse() throws Exception {
-        Mockito.when(booksService.findBooks()).thenReturn(new ArrayList<>());
+        Mockito.when(booksService.findBooks(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString()))
+                .thenReturn(new ArrayList<>());
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/books")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -76,7 +77,8 @@ class BooksControllerTest {
     @DisplayName("When Get All Books request and there are registered books Should return list")
     public void whenGetAllRequest_resultListResponse() throws Exception {
         var books = TestHelper.getBooksMock();
-        Mockito.when(booksService.findBooks()).thenReturn(books);
+        Mockito.when(booksService.findBooks(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyString()))
+                .thenReturn(books);
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/books")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -117,8 +119,7 @@ class BooksControllerTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.id", is( book.getId() )))
                 .andExpect(jsonPath("$.title").exists())
-        //        .andExpect(jsonPath("$._links").exists())
-        ;  // HATEOAS
+                .andExpect(jsonPath("$._links").exists());  // HATEOAS
     }
 
 

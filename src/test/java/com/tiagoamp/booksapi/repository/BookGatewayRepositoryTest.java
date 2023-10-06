@@ -13,6 +13,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.*;
@@ -38,9 +42,9 @@ class BookGatewayRepositoryTest {
         @DisplayName("When no books registered, should return empty list")
         void findAll_empty() {
             // given
-            Mockito.when(bookRepo.findAll()).thenReturn(new ArrayList<>());
+            Mockito.when(bookRepo.findAll(Mockito.any(PageRequest.class))).thenReturn(Page.empty());
             // when
-            List<Book> result = gatewayRepo.findAll();
+            List<Book> result = gatewayRepo.findAll(10, 0, "title", "ASC");
             // then
             assertNotNull(result);
             assertTrue(result.isEmpty());
@@ -51,9 +55,9 @@ class BookGatewayRepositoryTest {
         void findAll() {
             // given
             var mocks = TestHelper.getBooksEntityMock();
-            Mockito.when(bookRepo.findAll()).thenReturn(mocks);
+            Mockito.when(bookRepo.findAll(Mockito.any(PageRequest.class))).thenReturn(new PageImpl<>(mocks));
             // when
-            List<Book> result = gatewayRepo.findAll();
+            List<Book> result = gatewayRepo.findAll(10, 0, "title", "ASC");
             // then
             assertNotNull(result);
             assertFalse(result.isEmpty());
