@@ -20,7 +20,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-#        globally_quoted_identifiers: true    # to allow quotes to avoid DB reserved words conflict
+#        globally_quoted_identifiers: true    # uses identifiers with quotes to avoid DB reserved words conflict
     hibernate:
       ddl:
         auto: update
