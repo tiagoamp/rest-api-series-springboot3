@@ -26,10 +26,14 @@ spring:
         auto: update
   h2:
     console:
-      enabled: true
+      enabled: false  # set to false to avoid conflicts with spring security
   jackson:
     default-property-inclusion: NON_NULL
 
 springdoc:
   api-docs:
     path: /api-docs
+
+secret:
+#  key: 1234567890poiuytrewqmnbvcxz  # hard-coded example
+  key: ${JWT_SECRET:1234567890qwertyuiop}  # example of environment variable or default value if not found
