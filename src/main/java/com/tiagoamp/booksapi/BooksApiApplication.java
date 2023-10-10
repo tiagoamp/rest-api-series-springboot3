@@ -1,11 +1,18 @@
 package com.tiagoamp.booksapi;
 
+import com.tiagoamp.booksapi.model.AppUser;
+import com.tiagoamp.booksapi.model.Role;
+import com.tiagoamp.booksapi.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @SpringBootApplication
@@ -16,10 +23,25 @@ public class BooksApiApplication {
 	}
 
 	@Bean
+	CommandLineRunner run(UserService userService) {
+		return args -> {  // inserting data after application is up
+			userService.save(new AppUser("James Kirk", "james@enterprise.com", "123456", Role.ADMIN));
+			userService.save(new AppUser("Spock", "spock@enterprise.com", "123456", Role.ADMIN));
+			userService.save(new AppUser("Leonard McCoy", "mccoy@enterprise.com", "123456", Role.USER));
+			userService.save(new AppUser("Montgomery Scott", "scott@enterprise.com", "123456", Role.USER));
+		};
+	}
+
+	@Bean
 	public ModelMapper getModelMapper() {
 		var mapper = new ModelMapper();
 		mapper.getConfiguration().setSkipNullEnabled(true);
 		return mapper;
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
