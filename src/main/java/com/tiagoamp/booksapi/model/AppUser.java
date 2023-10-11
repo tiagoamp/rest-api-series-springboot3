@@ -41,7 +41,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));  // it uses de suffix 'ROLE_' to validate at controller methods
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));  // it uses de preffix 'ROLE_' to validate at controller methods
     }
 
     @Override
