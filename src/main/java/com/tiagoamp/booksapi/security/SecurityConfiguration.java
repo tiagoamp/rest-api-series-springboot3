@@ -33,10 +33,10 @@ public class SecurityConfiguration {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Do not create session
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/", "/swagger-ui/**", "/api-docs", "/api-docs/**").permitAll() // white list (swagger and root entry point)
-                    .requestMatchers(HttpMethod.GET, "/users").permitAll()  // white list: login and fetch users list
-                    .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
-//                        .requestMatchers(HttpMethod.POST, "/books").hasRole("ADMIN") // it pre-prends with "ROLE_" when validating role allowed
-                    .anyRequest().authenticated()
+                    .requestMatchers(HttpMethod.GET, "/users").permitAll()  // white list: fetch users list
+                    .requestMatchers(HttpMethod.POST, "/users/login").permitAll() // white list: login endpoint
+//                      .requestMatchers(HttpMethod.POST, "/books").hasRole("ADMIN") // it pre-prends with "ROLE_" when validating role allowed
+                    .anyRequest().authenticated()  // all others endpoints should be authenticated
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
